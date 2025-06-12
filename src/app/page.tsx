@@ -1,103 +1,195 @@
-import Image from "next/image";
+// src/app/page.tsx
+'use client';
 
-export default function Home() {
+import React, { useState, useEffect } from 'react';
+import { WeatherData } from '@/types/weather';
+import { fetchWeatherDataServer } from '@/lib/weather-api';
+import { getWeatherGradient } from '@/lib/utils';
+import WeatherCard from '@/components/WeatherCard';
+import SearchBar from '@/components/SearchBar';
+import { AlertCircle, Wifi, WifiOff } from 'lucide-react';
+
+// Generate consistent particle data that won't change between server and client
+const generateParticles = () => {
+  const particles = [];
+  for (let i = 0; i < 20; i++) {
+    particles.push({
+      id: i,
+      width: 5 + (i * 0.5) % 10,
+      height: 5 + (i * 0.3) % 10,
+      left: (i * 5) % 100,
+      top: (i * 7) % 100,
+      delay: (i * 0.5) % 10,
+      duration: 10 + (i * 0.8) % 20
+    });
+  }
+  return particles;
+};
+
+const PARTICLES = generateParticles();
+
+export default function HomePage() {
+  const [weather, setWeather] = useState<WeatherData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isOnline, setIsOnline] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Ensure component is mounted before showing random elements
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Check online status
+  useEffect(() => {
+    const updateOnlineStatus = () => setIsOnline(navigator.onLine);
+    
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+    
+    return () => {
+      window.removeEventListener('online', updateOnlineStatus);
+      window.removeEventListener('offline', updateOnlineStatus);
+    };
+  }, []);
+
+  // Load initial weather data for Colombo
+  useEffect(() => {
+    loadWeather('Colombo');
+  }, []);
+
+  const loadWeather = async (city: string) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const data = await fetchWeatherDataServer(city);
+      setWeather(data);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
+      setError(errorMessage);
+      console.error('Weather fetch error:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSearch = (city: string) => {
+    if (!isOnline) {
+      setError('No internet connection. Please check your connection and try again.');
+      return;
+    }
+    loadWeather(city);
+  };
+
+  const backgroundGradient = weather 
+    ? getWeatherGradient(weather.current.condition.text, weather.current.is_day === 1)
+    : 'bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600';
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+    <div className={`min-h-screen ${backgroundGradient} transition-all duration-1000 ease-in-out`}>
+      {/* Background Pattern */}
+      <div className="absolute inset-0 bg-black/20"></div>
+      
+      {/* Floating Particles - Only render after mounting to avoid hydration mismatch */}
+      {isMounted && (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {PARTICLES.map((particle) => (
+            <div
+              key={particle.id}
+              className="absolute bg-white/10 rounded-full animate-float"
+              style={{
+                width: particle.width,
+                height: particle.height,
+                left: `${particle.left}%`,
+                top: `${particle.top}%`,
+                animationDelay: `${particle.delay}s`,
+                animationDuration: `${particle.duration}s`
+              }}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          ))}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      )}
+
+      <div className="relative z-10 container mx-auto px-4 py-8">
+        {/* Header */}
+        <header className="text-center mb-12">
+          <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg animate-slide-up">
+            Weather Now
+          </h1>
+          <p className="text-xl text-white/80 drop-shadow-md animate-slide-up" style={{ animationDelay: '0.2s' }}>
+            Real-time weather information for any city worldwide
+          </p>
+          
+          {/* Connection Status */}
+          <div className="flex items-center justify-center mt-4 space-x-2">
+            {isOnline ? (
+              <>
+                <Wifi className="h-5 w-5 text-green-400" />
+                <span className="text-green-400 text-sm">Connected</span>
+              </>
+            ) : (
+              <>
+                <WifiOff className="h-5 w-5 text-red-400" />
+                <span className="text-red-400 text-sm">No connection</span>
+              </>
+            )}
+          </div>
+        </header>
+
+        {/* Search Bar */}
+        <div className="animate-slide-up" style={{ animationDelay: '0.4s' }}>
+          <SearchBar onSearch={handleSearch} isLoading={isLoading} />
+        </div>
+
+        {/* Error Display */}
+        {error && (
+          <div className="max-w-2xl mx-auto mb-8 animate-slide-up">
+            <div className="bg-red-500/20 backdrop-blur-md border border-red-500/30 rounded-2xl p-4 flex items-center space-x-3">
+              <AlertCircle className="h-6 w-6 text-red-400 flex-shrink-0" />
+              <div>
+                <h3 className="text-red-300 font-semibold">Weather Error</h3>
+                <p className="text-red-200 text-sm">{error}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Weather Display */}
+        <div className="animate-slide-up" style={{ animationDelay: '0.6s' }}>
+          {weather && (
+            <WeatherCard weather={weather} isLoading={isLoading} />
+          )}
+        </div>
+
+        {/* Footer */}
+        <footer className="text-center mt-12 text-white/60 animate-fade-in" style={{ animationDelay: '0.8s' }}>
+          <p className="text-sm">
+            Weather data provided by{' '}
+            <a 
+              href="https://www.weatherapi.com/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-white/80 hover:text-white underline transition-colors"
+            >
+              WeatherAPI.com
+            </a>
+          </p>
+          <p className="text-xs mt-2">
+            Built with Next.js 15 and Tailwind CSS
+          </p>
+        </footer>
+      </div>
+
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+          50% { transform: translateY(-20px) rotate(180deg); opacity: 0.6; }
+        }
+        .animate-float {
+          animation: float linear infinite;
+        }
+      `}</style>
     </div>
   );
 }
