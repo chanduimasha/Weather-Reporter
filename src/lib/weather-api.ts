@@ -1,4 +1,3 @@
-// src/lib/weather-api.ts
 import axios from 'axios';
 import { WeatherData } from '@/types/weather';
 

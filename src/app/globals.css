@@ -1,205 +1,252 @@
-/* src/app/globals.css */
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import "tailwindcss";
+
+:root {
+  --background: #400000;
+  --foreground: #9e9d9c;
+}
+
+body {
+  background: #400000;
+  color: #f2f2f2;
+  font-family: Arial, Helvetica, sans-serif;
+}
 
 @layer base {
-  * {
-    @apply border-border;
-  }
+  :root {
+    /* Core brand colors */
+    --color-brand-white: #ffffff;
+    --color-brand-silver: #f2f2f2;
+    --color-brand-silver-dark: #c0c0c0;
+    --color-brand-maroon: #400000;
+    --color-brand-maroon-light: #800000;
 
-  html {
-    scroll-behavior: smooth;
-  }
+    /* Background colors */
+    --background-white: #ffffff;
+    --background-maroon: #400000;
+    --background-maroon-light: #800000;
+    --background-silver: #9e9d9c;
+    --background-silver-light: #f2f2f2;
+    --background-silver-dark: #606060;
 
-  body {
-    @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
-  }
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-
-  /* Custom animations */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes slideUp {
-    from {
-      transform: translateY(30px);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-
-  @keyframes bounceGentle {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-
-  @keyframes shimmer {
-    0% {
-      background-position: -200% 0;
-    }
-    100% {
-      background-position: 200% 0;
-    }
-  }
-
-  .animate-fade-in {
-    animation: fadeIn 0.6s ease-out forwards;
-  }
-
-  .animate-slide-up {
-    animation: slideUp 0.6s ease-out forwards;
-  }
-
-  .animate-bounce-gentle {
-    animation: bounceGentle 3s ease-in-out infinite;
-  }
-
-  .animate-shimmer {
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.2),
-      transparent
+    /* Gradient configurations */
+    --gradient-maroon-background: linear-gradient(
+      180deg,
+      var(--background-maroon) 70%,
+      var(--background-silver-light) 100%
     );
-    background-size: 200% 100%;
-    animation: shimmer 2s infinite;
-  }
 
-  /* Glass morphism effect */
-  .glass {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  }
-
-  /* Gradient text */
-  .gradient-text {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* Custom scrollbar */
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
-  }
-
-  /* Focus styles */
-  .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-transparent;
-  }
-
-  /* Responsive text sizing */
-  .text-responsive-xs {
-    @apply text-xs sm:text-sm;
-  }
-
-  .text-responsive-sm {
-    @apply text-sm sm:text-base;
-  }
-
-  .text-responsive-base {
-    @apply text-base sm:text-lg;
-  }
-
-  .text-responsive-lg {
-    @apply text-lg sm:text-xl;
-  }
-
-  .text-responsive-xl {
-    @apply text-xl sm:text-2xl;
-  }
-
-  .text-responsive-2xl {
-    @apply text-2xl sm:text-3xl;
-  }
-
-  .text-responsive-3xl {
-    @apply text-3xl sm:text-4xl;
-  }
-
-  /* Container max widths */
-  .container-custom {
-    @apply mx-auto px-4 sm:px-6 lg:px-8;
-    max-width: 1200px;
+    --gradient-silver-background: linear-gradient(
+      180deg,
+      var(--background-silver-light) 70%,
+      var(--background-maroon) 100%
+    );
   }
 }
 
-/* Loading animation for skeleton */
-.skeleton {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.1) 25%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0.1) 75%
-  );
-  background-size: 200% 100%;
-  animation: loading 1.5s infinite;
+@layer components {
+  .link {
+    color: var(--color-brand-silver-dark);
+  }
+
+  .link:hover {
+    color: var(--color-brand-white);
+  }
+
+  .maroon-button {
+    background: var(--background-silver-light);
+    color: var(--color-brand-maroon);
+    border-width: 2;
+    border-color: var(--background-maroon);
+  }
+
+  .maroon-button:hover {
+    background: var(--background-maroon);
+    color: var(--color-brand-silver);
+    border-color: var(--background-silver-light);
+  }
+
+  .maroon-silver-button {
+    background: var(--background-silver);
+    color: var(--color-brand-maroon);
+    border-width: 2;
+    border-color: var(--background-maroon);
+  }
+
+  .maroon-silver-button:hover {
+    background: var(--background-maroon);
+    color: var(--color-brand-silver);
+  }
+
+  .silver-border-button {
+    background: var(--background-maroon);
+    color: var(--color-brand-silver);
+    border-width: 2;
+    border-color: var(--background-silver);
+  }
+
+  .silver-border-button:hover {
+    border-color: var(--background-silver-light);
+  }
+
+  .maroon-section {
+    background: var(--background-maroon);
+    color: var(--color-brand-silver);
+  }
+
+  .silver-section {
+    background: var(--background-silver);
+    color: var(--color-brand-maroon);
+  }
+
+  .maroon-gradient-section {
+    background: var(--gradient-maroon-background);
+    color: var(--color-brand-silver);
+  }
+
+  .silver-gradient-section {
+    background: var(--gradient-silver-background);
+    color: var(--color-brand-maroon);
+  }
 }
 
-@keyframes loading {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
+.react-datepicker {
+  font-family: inherit;
 }
 
-/* Smooth transitions for all interactive elements */
-button,
-input,
-select,
-textarea,
-a {
-  transition: all 0.2s ease-in-out;
+.react-datepicker__header {
+  background-color: #f8f5f5 !important;
+  border-bottom: 1px solid #40000030 !important;
 }
 
-/* Print styles */
-@media print {
-  .no-print {
-    display: none !important;
-  }
+.react-datepicker__year-wrapper {
+  max-width: 280px !important;
+}
 
-  body {
-    background: white !important;
-    color: black !important;
-  }
+.react-datepicker__year-text {
+  margin: 0.4rem !important;
+  padding: 0.2rem 0.4rem !important;
+}
+
+.react-datepicker__year-text:hover {
+  background-color: #40000030 !important;
+}
+
+.react-datepicker__year-text--selected,
+.react-datepicker__year-text--keyboard-selected {
+  background-color: #400000 !important;
+  color: white !important;
+}
+
+.react-datepicker__year-text--selected:hover,
+.react-datepicker__year-text--keyboard-selected:hover {
+  background-color: #4f0505 !important;
+  color: white !important;
+}
+
+.react-datepicker__triangle {
+  border-bottom-color: #f8f5f5 !important;
+}
+
+.react-datepicker__triangle::before {
+  border-bottom-color: #40000030 !important;
+}
+
+.react-datepicker__navigation:hover *::before {
+  border-color: #400000 !important;
+}
+
+/* Selected day background color */
+.react-datepicker__day--selected {
+  background-color: #400000 !important;
+  color: white !important;
+}
+
+/* Selected day hover state */
+.react-datepicker__day--selected:hover {
+  background-color: #4f0505 !important;
+}
+
+/* Keyboard selected day (when using keyboard navigation) */
+.react-datepicker__day--keyboard-selected {
+  background-color: rgba(64, 0, 0, 0.2) !important;
+  color: #400000 !important;
+}
+
+/* Today's date highlighting */
+.react-datepicker__day--today {
+  font-weight: bold;
+  color: #400000 !important;
+}
+
+/* Day hover state */
+.react-datepicker__day:hover {
+  background-color: rgba(64, 0, 0, 0.1) !important;
+}
+
+/* Month navigation header text */
+.react-datepicker__current-month {
+  color: #400000 !important;
+}
+
+/* Day name headers (Mon, Tue, etc.) */
+.react-datepicker__day-name {
+  color: #400000 !important;
+}
+
+/* Month dropdown options */
+.react-datepicker__month-option:hover,
+.react-datepicker__month-option--selected {
+  background-color: rgba(64, 0, 0, 0.1) !important;
+}
+
+.react-datepicker__month-option--selected
+  .react-datepicker__month-option--selected_month {
+  color: #400000 !important;
+}
+
+/* Year dropdown options */
+.react-datepicker__year-option:hover,
+.react-datepicker__year-option--selected {
+  background-color: rgba(64, 0, 0, 0.1) !important;
+}
+
+.react-datepicker__year-option--selected
+  .react-datepicker__year-option--selected_year {
+  color: #400000 !important;
+}
+
+/* Month and year selection read view */
+.react-datepicker__month-read-view--selected-month,
+.react-datepicker__year-read-view--selected-year {
+  color: #400000 !important;
+}
+
+/* Dropdown arrows */
+.react-datepicker__month-read-view--down-arrow,
+.react-datepicker__year-read-view--down-arrow {
+  border-color: #400000 transparent transparent !important;
+}
+
+/* Day in-range styles (for date ranges) */
+.react-datepicker__day--in-range,
+.react-datepicker__day--in-selecting-range {
+  background-color: rgba(64, 0, 0, 0.2) !important;
+  color: #400000 !important;
+}
+
+/* Navigation arrows */
+.react-datepicker__navigation-icon::before {
+  border-color: #400000 !important;
+}
+
+/* Month and year dropdowns */
+.react-datepicker__month-dropdown,
+.react-datepicker__year-dropdown {
+  background-color: white;
+  border: 1px solid rgba(64, 0, 0, 0.2) !important;
+}
+
+/* Time section headers */
+.react-datepicker-time__header {
+  color: #400000 !important;
 }

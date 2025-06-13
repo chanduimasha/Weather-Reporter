@@ -1,4 +1,3 @@
-// src/components/WeatherCard.tsx
 'use client';
 
 import React from 'react';
@@ -13,8 +12,6 @@ import {
   MapPin,
   Activity,
   CloudRain,
-  Sunrise,
-  Sunset
 } from 'lucide-react';
 import { WeatherCardProps } from '@/types/weather';
 import { formatTime, getUVLevel } from '@/lib/utils';

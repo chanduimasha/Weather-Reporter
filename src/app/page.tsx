@@ -1,4 +1,3 @@
-// src/app/page.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -176,7 +175,7 @@ export default function HomePage() {
             </a>
           </p>
           <p className="text-xs mt-2">
-            Built with Next.js 15 and Tailwind CSS
+            Developed by{' Chandu Rathnayake '}
           </p>
         </footer>
       </div>
